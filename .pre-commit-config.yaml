@@ -1,0 +1,22 @@
+# Run `pre-commit install` once after cloning; these hooks then run on every commit.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=30000"]  # digit_model.h5 is ~27.5 MB
+      - id: check-merge-conflict
+
+  # Pylint runs from the project's own environment so it can import Flask,
+  # TensorFlow and Keras exactly as CI does.
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        require_serial: true
