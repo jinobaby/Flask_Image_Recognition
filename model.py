@@ -1,4 +1,4 @@
-# Importing required libs
+"""Load the trained Keras model and turn uploaded images into digit predictions."""
 import os
 
 from keras.models import load_model
@@ -6,21 +6,23 @@ from keras.utils import img_to_array
 import numpy as np
 from PIL import Image
 
-# Loading model (path is relative to this file, not the author's D: drive)
+# Path is relative to this file, not the author's D: drive
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "digit_model.h5")
+IMAGE_SIZE = (224, 224)
+
 model = load_model(MODEL_PATH)
 
 
-# Preparing and pre-processing the image
 def preprocess_img(img_path):
+    """Open an image and convert it to a (1, 224, 224, 3) array scaled to 0-1."""
     op_img = Image.open(img_path)
-    img_resize = op_img.resize((224, 224))
+    img_resize = op_img.resize(IMAGE_SIZE)
     img2arr = img_to_array(img_resize) / 255.0
-    img_reshape = img2arr.reshape(1, 224, 224, 3)
+    img_reshape = img2arr.reshape(1, IMAGE_SIZE[0], IMAGE_SIZE[1], 3)
     return img_reshape
 
 
-# Predicting function
-def predict_result(predict):
-    pred = model.predict(predict)
+def predict_result(img_array):
+    """Return the most likely digit (0-9) for a preprocessed image array."""
+    pred = model.predict(img_array)
     return np.argmax(pred[0], axis=-1)
