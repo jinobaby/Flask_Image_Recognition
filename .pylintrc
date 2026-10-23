@@ -1,0 +1,21 @@
+# Pylint configuration for the Flask hand-sign digit recognition app.
+# Start from pylint's defaults and only change what the project needs.
+
+[MAIN]
+# Lint only our code, not the image fixtures or virtual environments.
+ignore=test_images,.venv,venv
+# TensorFlow is a compiled extension; let pylint import it to resolve members.
+extension-pkg-allow-list=tensorflow
+# CI fails if the overall score drops below this.
+fail-under=9.0
+
+[FORMAT]
+max-line-length=100
+
+[MESSAGES CONTROL]
+# Tests use fixtures as arguments and pytest's redefined-outer-name pattern.
+disable=redefined-outer-name
+
+[REPORTS]
+output-format=text
+score=yes
