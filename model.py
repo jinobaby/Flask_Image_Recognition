@@ -15,7 +15,9 @@ model = load_model(MODEL_PATH)
 
 def preprocess_img(img_path):
     """Open an image and convert it to a (1, 224, 224, 3) array scaled to 0-1."""
-    op_img = Image.open(img_path)
+    # Convert to RGB so RGBA PNGs, greyscale and palette images all become
+    # 3 channels, which is what the model's input layer expects.
+    op_img = Image.open(img_path).convert("RGB")
     img_resize = op_img.resize(IMAGE_SIZE)
     img2arr = img_to_array(img_resize) / 255.0
     img_reshape = img2arr.reshape(1, IMAGE_SIZE[0], IMAGE_SIZE[1], 3)
