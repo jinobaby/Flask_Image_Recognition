@@ -37,23 +37,31 @@ Download as **[ZIP](https://github.com/Sachin-crypto/Flask_Image_Recognition/arc
 
 # Install Dependencies
 
-Install the dependencies from the **requirements.txt** file.
+Requires **Python 3.11** (TensorFlow 2.15 supports 3.9-3.11).
 
 ```commandline
-pip install -r requirements.txt
+python3.11 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt   # app + pylint, pytest, pre-commit
+pre-commit install
 ```
 
 # Run
 
-**cd** into the current directory and run the script.
+```commandline
+python app.py
+```
+
+Open http://127.0.0.1:9000, choose an image from `test_images/`, and click **Submit**.
+(`flask --app app.py run --debug` also works but uses port 5000, which macOS
+reserves for AirPlay Receiver; add `--port 9000` on a Mac.)
+
+# Code quality and tests
 
 ```commandline
-flask --app app.py run --debug
+pylint app.py model.py tests
+pytest -v
+pre-commit run --all-files
 ```
-Click [here](https://geekpython.in/run-flask-app-from-the-command-line-in-windows) to get the detailed guide on running the Flask app from the command line.
 
-# Test
-
-- Choose an image from the test images folder.
-- You will see a preview of the uploaded image.
-- Click on **Submit** button and see the magic.
+GitHub Actions runs Pylint and pytest on every push (`.github/workflows/ci.yml`).
