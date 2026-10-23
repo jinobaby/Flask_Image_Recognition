@@ -1,11 +1,14 @@
 # Importing required libs
+import os
+
 from keras.models import load_model
 from keras.utils import img_to_array
 import numpy as np
 from PIL import Image
 
-# Loading model
-model = load_model("D:/SACHIN/Models/Hand-Sign-Digit-Language/digit_model.h5")
+# Loading model (path is relative to this file, not the author's D: drive)
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "digit_model.h5")
+model = load_model(MODEL_PATH)
 
 
 # Preparing and pre-processing the image
