@@ -113,3 +113,13 @@ def test_unknown_route_returns_404(client):
     """Routes that do not exist return 404."""
     response = client.get("/does-not-exist")
     assert response.status_code == 404
+
+
+def test_png_with_transparency_gets_prediction(client, fake_prediction):
+    """An RGBA PNG (e.g. a screenshot) is a valid image and should be predicted."""
+    data = {"file": (make_image_bytes(mode="RGBA", fmt="PNG"), "screenshot.png")}
+    response = client.post("/prediction", data=data, content_type="multipart/form-data")
+
+    assert b">7</h2>" in response.data
+    assert ERROR_TEXT not in response.data
+    assert len(fake_prediction) == 1

@@ -69,3 +69,19 @@ def test_real_model_output_is_a_digit():
     """The real model returns an integer class between 0 and 9."""
     prediction = model.predict_result(np.zeros((1, 224, 224, 3), dtype=np.float32))
     assert 0 <= int(prediction) <= 9
+
+
+# --- Non-RGB inputs --------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "mode, fmt",
+    [
+        ("RGBA", "PNG"),  # screenshots and PNGs with transparency
+        ("L", "PNG"),     # greyscale photos
+        ("P", "GIF"),     # palette images
+    ],
+)
+def test_preprocess_handles_non_rgb_images(mode, fmt):
+    """Any valid image is converted to 3-channel RGB before reshaping."""
+    result = model.preprocess_img(make_image_bytes(mode=mode, fmt=fmt))
+    assert result.shape == (1, 224, 224, 3)
