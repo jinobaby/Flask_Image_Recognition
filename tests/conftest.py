@@ -1,6 +1,7 @@
 """Shared pytest fixtures for the Flask hand-sign digit app."""
 import io
 import os
+import re
 import sys
 
 import pytest
@@ -15,7 +16,18 @@ from app import app as flask_app  # pylint: disable=wrong-import-position
 
 @pytest.fixture
 def client():
-    """Flask test client with testing mode enabled."""
+    """Flask test client that sends a valid CSRF token, like the real form."""
+    flask_app.config["TESTING"] = True
+    with flask_app.test_client() as test_client:
+        page = test_client.get("/").get_data(as_text=True)
+        token = re.search(r'name="csrf_token" value="([^"]+)"', page).group(1)
+        test_client.environ_base["HTTP_X_CSRFTOKEN"] = token
+        yield test_client
+
+
+@pytest.fixture
+def client_without_token():
+    """Flask test client that does not send a CSRF token."""
     flask_app.config["TESTING"] = True
     with flask_app.test_client() as test_client:
         yield test_client

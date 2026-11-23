@@ -1,7 +1,9 @@
 """Flask web app that predicts the digit shown in a hand-sign image."""
 import os
+import secrets
 
 from flask import Flask, render_template, request
+from flask_wtf.csrf import CSRFProtect
 
 from model import preprocess_img, predict_result
 
@@ -9,6 +11,10 @@ ERROR_MESSAGE = "File cannot be processed."
 
 # Instantiating flask app
 app = Flask(__name__)
+# CSRF tokens are signed with SECRET_KEY: read it from the environment, or
+# generate a random one per process (never hard-code it in the repo).
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+csrf = CSRFProtect(app)
 
 
 @app.route("/")

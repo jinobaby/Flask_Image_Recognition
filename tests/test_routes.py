@@ -123,3 +123,16 @@ def test_png_with_transparency_gets_prediction(client, fake_prediction):
     assert b">7</h2>" in response.data
     assert ERROR_TEXT not in response.data
     assert len(fake_prediction) == 1
+
+
+# --- CSRF protection -------------------------------------------------------
+
+def test_post_without_csrf_token_is_rejected(client_without_token, fake_prediction):
+    """A cross-site form post without the CSRF token never reaches the model."""
+    response = client_without_token.post(
+        "/prediction",
+        data={"file": (make_image_bytes(), "digit.jpg")},
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 400
+    assert not fake_prediction
