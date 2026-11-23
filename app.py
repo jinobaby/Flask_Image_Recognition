@@ -1,4 +1,6 @@
 """Flask web app that predicts the digit shown in a hand-sign image."""
+import os
+
 from flask import Flask, render_template, request
 
 from model import preprocess_img, predict_result
@@ -35,4 +37,6 @@ def predict_image_file():
 
 # Driver code
 if __name__ == "__main__":
-    app.run(port=9000, debug=True)
+    # Debug mode turns on the Werkzeug debugger, which lets anyone who can reach
+    # the page run Python code. Only enable it locally with FLASK_DEBUG=1.
+    app.run(port=9000, debug=os.environ.get("FLASK_DEBUG") == "1")
