@@ -1,0 +1,12 @@
+# Coverage settings for pytest-cov (used by the SonarQube Cloud workflow).
+[run]
+# Repo-relative paths in coverage.xml so SonarQube Cloud can match files.
+relative_files = True
+source = .
+omit =
+    tests/*
+    venv/*
+    .venv/*
+
+[report]
+show_missing = True
